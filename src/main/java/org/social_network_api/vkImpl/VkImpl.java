@@ -13,11 +13,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.social_network_api.domain.Group;
-import org.social_network_api.domain.Sex;
 import org.social_network_api.domain.User;
 import org.social_network_api.domain.Users;
 import org.social_network_api.interfaces.SocialNetworkApi;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import static org.social_network_api.Constants.*;
 
 
 /**
@@ -30,8 +32,7 @@ public class VkImpl implements SocialNetworkApi {
   private static Logger log = Logger.getLogger(VkImpl.class.getName());
   public static HashMap<Long, String> cities = new HashMap<Long, String>();
   public static HashMap<Long, String> countries = new HashMap<Long, String>();
-  /**URL host for vk API https://api.vk.com/method*/
-  private String host = "https://api.vk.com/method/";
+
 
   /**
    * Method return random user of Vk who meet some requirements( should not be deactivated, name should not be
@@ -50,23 +51,6 @@ public class VkImpl implements SocialNetworkApi {
 		return user;
 	}*/
 
-  public static void main(String[] args)
-  {
-    VkImpl v = new VkImpl();
-    //User u = v.getUser(1);
-    //System.out.println(u);
-
-
-    Users s = new RestTemplate().getForObject( v.host + "users.get" +  "?user_ids=1&fields=sex,bdate,city,country,home_town,status" ,
-            Users.class);
-    System.out.println(s.getUsers()[0]);
-
-    /*System.out.println(Arrays.toString(Sex.values()));
-    System.out.println(Sex.getById(0) );
-    System.out.println(Sex.getById(1) );
-    System.out.println(Sex.getById(2) );*/
-
-  }
 
   /**
    * Method returns User who is linked with id number in VK. Method send HTTP get request and get JSON
@@ -74,10 +58,18 @@ public class VkImpl implements SocialNetworkApi {
    * @return Filled User instance
    */
   public User getUser(int id) {
-    User user = new User();
-    String method = "users.get";
-    String parametr1 = "user_ids=" + id;
-    String parametr2 = "fields=sex,city,bdate,country,home_town,photo_max_orig,status,relation";
+    UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(VK_HOST + USER_GET_METHOD);
+    urlBuilder.queryParam(USER_IDS, id);
+    urlBuilder.queryParam(FIELDS_PARAMETER_KEY, FIELDS_PARAMETER_VALUE);
+
+    String url = urlBuilder.build().toUriString();
+
+    System.out.println(url);
+
+    Users users = new RestTemplate().getForObject( url, Users.class);
+    System.out.println(users.getUsers()[0]);
+    
+    return users.getUsers()[0];
 
     /*InputStreamReader in = request(method, parametr1, parametr2);
     JSONParser jsonParser = new JSONParser();
@@ -206,9 +198,9 @@ public class VkImpl implements SocialNetworkApi {
       user.setFemaleSubscriptions(subscriptions.get(3));
     }*/
 
-    log.log(Level.INFO,
-            "user obtained: id - " + id + " name - " + user.getName() + " last name - " + user.getLastName());
-    return user;
+    /*log.log(Level.INFO,
+            "user obtained: id - " + id + " name - " + user.getName() + " last name - " + user.getLastName());*/
+    //return user;
 
   }
 
@@ -650,7 +642,7 @@ public class VkImpl implements SocialNetworkApi {
    * Perform request to vk url and print response to console (for testing)
    */
   private void printReqest(String... args) {
-    String urlString = host + args[0] + "?" + args[1];
+    String urlString = VK_HOST + args[0] + "?" + args[1];
     for (int i = 2; i < args.length; ++i) {
       urlString = urlString + "&" + args[i];
     }
@@ -703,7 +695,7 @@ public class VkImpl implements SocialNetworkApi {
    * Perform request to vk url
    */
   private InputStreamReader request(String... args) {
-    String urlString = host + args[0] + "?" + args[1];
+    String urlString = VK_HOST + args[0] + "?" + args[1];
     for (int i = 2; i < args.length; ++i) {
       urlString = urlString + "&" + args[i];
     }
