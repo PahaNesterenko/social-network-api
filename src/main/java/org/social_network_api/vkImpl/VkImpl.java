@@ -68,110 +68,8 @@ public class VkImpl implements SocialNetworkApi {
 
     Users users = new RestTemplate().getForObject( url, Users.class);
     System.out.println(users.getUsers()[0]);
-    
-    return users.getUsers()[0];
 
-    /*InputStreamReader in = request(method, parametr1, parametr2);
-    JSONParser jsonParser = new JSONParser();
-    JSONObject jsonObject = null;
-    try {
-      jsonObject = (JSONObject) jsonParser.parse(in);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    JSONArray jarr = (JSONArray) jsonObject.get("response");
-    jsonObject = (JSONObject) jarr.get(0);
-    if (jsonObject.containsKey("deactivated")) {
-      log.log(Level.INFO, "User " + id + " deactivated");
-      user.setDeactivated(true);
-      return user;
-    }
-
-    user.setId(id);
-    String name = (String) jsonObject.get("first_name");
-    if (!name.equals(null)) {
-      user.setName(removeNonAlphaChars(name));
-    }
-    String lastName = (String) jsonObject.get("last_name");
-    if (!lastName.equals(null)) {
-      user.setLastName(removeNonAlphaChars(lastName));
-    }
-    String status = (String) jsonObject.get("status");
-    if (!status.equals(null)) {
-      user.setStatus(removeNonAlphaChars(removeSmiles(status)));
-    }
-    String bdate = (String) jsonObject.get("bdate");
-    if (bdate != null) {
-      user.setBdate(bdate);
-    }
-
-    Object city = jsonObject.get("city");
-    if (city instanceof String) {
-      user.setCity((String) city);
-    } else {
-      user.setCity(getCitiesById((Long) city).replace("'", " "));
-    }
-
-    Object country = jsonObject.get("country");
-    if (country instanceof String) {
-      user.setCountry((String) country);
-    } else {
-      user.setCountry(getCountriesById((Long) country).replace("'", " "));
-    }
-
-    Object homeTown = jsonObject.get("home_town");
-    if (homeTown instanceof String) {
-      user.setHomeTown((String) homeTown);
-    } else {
-      user.setHomeTown(getCitiesById((Long) homeTown).replace("'", " "));
-    }
-
-    user.setPhotoAddress((String) jsonObject.get("photo_max_orig"));
-
-    Long sexNum = (Long) jsonObject.get("sex");
-    if (sexNum == 1) {
-      user.setSex("female");
-    } else if (sexNum == 2) {
-      user.setSex("male");
-    } else {
-      user.setSex("n/d");
-    }
-
-    Long relationNum = (Long) jsonObject.get("relation");
-    if (relationNum != null) {
-      switch ((int) (long) relationNum) {
-        case 1:
-          user.setRelation("single");
-          break;
-        case 2:
-          user.setRelation("in a relationship");
-          break;
-        case 3:
-          user.setRelation("engaget");
-          break;
-        case 4:
-          user.setRelation("married");
-          break;
-        case 5:
-          user.setRelation("mess");
-          break;
-        case 6:
-          user.setRelation("in active search");
-          break;
-        case 7:
-          user.setRelation("in love");
-          break;
-        default:
-          user.setRelation("n/d");
-      }
-    }
-    try {
-      in.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    User user = users.getUsers()[0];
 
     ArrayList<Integer> friendList = getFriendList(id);
     user.setFriendList(friendList);
@@ -196,11 +94,41 @@ public class VkImpl implements SocialNetworkApi {
       user.setSubscriptions(subscriptions.get(1));
       user.setMaleSubscriptions(subscriptions.get(2));
       user.setFemaleSubscriptions(subscriptions.get(3));
-    }*/
+    }
 
-    /*log.log(Level.INFO,
-            "user obtained: id - " + id + " name - " + user.getName() + " last name - " + user.getLastName());*/
-    //return user;
+    return user;
+
+    /*
+
+
+
+    Object city = jsonObject.get("city");
+    if (city instanceof String) {
+      user.setCity((String) city);
+    } else {
+      user.setCity(getCitiesById((Long) city).replace("'", " "));
+    }
+
+    Object country = jsonObject.get("country");
+    if (country instanceof String) {
+      user.setCountry((String) country);
+    } else {
+      user.setCountry(getCountriesById((Long) country).replace("'", " "));
+    }
+
+    Object homeTown = jsonObject.get("home_town");
+    if (homeTown instanceof String) {
+      user.setHomeTown((String) homeTown);
+    } else {
+      user.setHomeTown(getCitiesById((Long) homeTown).replace("'", " "));
+    }
+
+
+
+
+   */
+
+
 
   }
 
