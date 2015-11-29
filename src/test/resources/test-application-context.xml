@@ -41,7 +41,6 @@
         </property>
     </bean>
 
-    <bean id="rowDao" class="org.social_network_api.dao.RowDao"/>
     <bean id="userDao" class="org.social_network_api.dao.UserDaoImpl"/>
 
 </beans>

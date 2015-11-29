@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:test-application-context.xml"})
@@ -25,13 +25,18 @@ public class VkImplTest {
   public void test() {
 
     System.out.println("hello");
-    User user = VkImpl.getUser(1);
+    User user = VkImpl.getUser(2);
 
-    assertEquals(user.getName(), "Павел");
-    assertEquals(user.getLastName(), "Дуров");
+   // assertEquals(user.getName(), "Павел");
+   // assertEquals(user.getLastName(), "Дуров");
 
     userDao.createUser(user);
 
+    User u = userDao.getById(1L);
+
+    List<User> users = userDao.getAllUsers();
+
+    System.out.println("hello");
 
   }
 

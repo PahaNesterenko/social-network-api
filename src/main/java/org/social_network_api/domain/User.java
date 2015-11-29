@@ -23,7 +23,7 @@ public class User {
   @JsonProperty("uid")
   @Id
   @Column(name = "ID")
-  private int id;
+  private Long id;
 
   @JsonProperty("first_name")
   @Column(name = "FIRST_NAME")
@@ -35,7 +35,7 @@ public class User {
 
   @JsonProperty("deactivated")
   @Column(name = "DEACTIVATED")
-  private boolean deactivated;
+  private String deactivated;
 
   @JsonProperty("verified")
   @Column(name = "VERIFIED")
@@ -126,11 +126,11 @@ public class User {
   }
 
 
-  public int getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Long id) {
     this.id = id;
   }
 
@@ -150,11 +150,11 @@ public class User {
     this.lastName = lastName;
   }
 
-  public boolean isDeactivated() {
+  public String getDeactivated() {
     return deactivated;
   }
 
-  public void setDeactivated(boolean deactivated) {
+  public void setDeactivated(String deactivated) {
     this.deactivated = deactivated;
   }
 
