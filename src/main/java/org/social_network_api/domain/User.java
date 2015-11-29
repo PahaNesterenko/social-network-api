@@ -1,58 +1,118 @@
 package org.social_network_api.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.social_network_api.utils.CustomJsonDateDeserializer;
 
+import javax.persistence.*;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class container for User of VK social web. Contains basic info about user
- *
- * @author Pasha
  */
+@Entity
+@Table(name="USER")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class User {
 
   @JsonProperty("uid")
+  @Id
+  @Column(name = "ID")
   private int id;
+
   @JsonProperty("first_name")
+  @Column(name = "FIRST_NAME")
   private String name;
+
   @JsonProperty("last_name")
+  @Column(name = "LAST_NAME")
   private String lastName;
+
   @JsonProperty("deactivated")
+  @Column(name = "DEACTIVATED")
   private boolean deactivated;
+
   @JsonProperty("verified")
+  @Column(name = "VERIFIED")
   private boolean verified;
+
   @JsonProperty("sex")
+  @Column(name = "SEX_ID")
   private Sex sex;
+
   @JsonProperty("bdate")
-  private String bdate;
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  @Column(name = "BDATE")
+  private Date bdate;
+
   @JsonProperty("city")
+  @Column(name = "CITY")
   private int city;
+
   @JsonProperty("country")
+  @Column(name = "COUNTRY")
   private int country;
+
   @JsonProperty("home_town")
+  @Column(name = "HOME_TOWN")
   private String homeTown;
+
   @JsonProperty("photo_max")
+  @Column(name = "PHOTO_ADDRESS")
   private String photoAddress;
+
   @JsonProperty("online")
+  @Transient
   private boolean online;
+
   @JsonProperty("status")
+  @Column(name = "STATUS")
   private String status;
+
   @JsonProperty("followers_count")
+  @Column(name = "FOLLOWERS_COUNT")
   private int followersCount;
+
   @JsonProperty("relation")
+  @Column(name = "RELATION_ID")
   private Relation relation;
+
+  @Column(name = "FRIENDS_NUM")
   private int friendsNum;
-  private ArrayList<Integer> friendList;
+
+  @Transient
+  private List<Integer> friendList;
+
+  @Column(name = "MALE_FRIENDST")
   private int maleFriends;
+
+  @Column(name = "FEMALE_FRIENDST")
   private int femaleFriends;
+
+  @Column(name = "FOLLOWERS")
   private int followers;
+
+  @Column(name = "MALE_FOLLOWERS")
   private int maleFollowers;
+
+  @Column(name = "FEMALE_FOLLOWERS")
   private int femaleFollowers;
+
+  @Column(name = "SUBSCRIPTIONS")
   private int subscriptions;
+
+  @Column(name = "GROUP_SUBSCRIPTIONS")
   private int groupSubscriptions;
+
+  @Column(name = "MALE_SUBSCRIPTIONS")
   private int maleSubscriptions;
+
+  @Column(name = "FEMALE_SUBSCRIPTIONS")
   private int femaleSubscriptions;
 
   public String toString() {
@@ -114,11 +174,11 @@ public class User {
     this.sex = Sex.getById(sex);
   }
 
-  public String getBdate() {
+  public Date getBdate() {
     return bdate;
   }
 
-  public void setBdate(String bdate) {
+  public void setBdate(Date bdate) {
     this.bdate = bdate;
   }
 
@@ -194,7 +254,7 @@ public class User {
     this.friendsNum = friendsNum;
   }
 
-  public ArrayList<Integer> getFriendList() {
+  public List<Integer> getFriendList() {
     return friendList;
   }
 

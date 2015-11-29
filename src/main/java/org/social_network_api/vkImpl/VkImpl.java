@@ -1,13 +1,5 @@
 package org.social_network_api.vkImpl;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -16,8 +8,19 @@ import org.social_network_api.domain.Group;
 import org.social_network_api.domain.User;
 import org.social_network_api.domain.Users;
 import org.social_network_api.interfaces.SocialNetworkApi;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.social_network_api.Constants.*;
 
@@ -27,6 +30,7 @@ import static org.social_network_api.Constants.*;
  * @author Pasha
  *
  */
+@Component
 public class VkImpl implements SocialNetworkApi {
 
   private static Logger log = Logger.getLogger(VkImpl.class.getName());
