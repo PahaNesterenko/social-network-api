@@ -14,7 +14,7 @@
     <context:component-scan base-package="org.social_network_api"/>
     <tx:annotation-driven/>
 
-    <bean id="transactionManager"
+    <!--<bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager"
           name="txManager">
         <property name="sessionFactory" ref="sessionFactory" />
@@ -40,6 +40,6 @@
                 hibernate.show_sql=true
             </value>
         </property>
-    </bean>
+    </bean>-->
 
 </beans>

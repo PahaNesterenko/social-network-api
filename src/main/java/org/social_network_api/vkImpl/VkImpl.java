@@ -18,6 +18,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,24 +76,24 @@ public class VkImpl implements SocialNetworkApi {
 
     User user = users.getUsers()[0];
 
-    ArrayList<Integer> friendList = getFriendList(id);
+    List<Integer> friendList = getFriendList(id);
     user.setFriendList(friendList);
     user.setFriendsNum(friendList.size());
 
-    ArrayList<Integer> friendsParameters = getFriendParameters(id);
+    List<Integer> friendsParameters = getFriendParameters(id);
     if (friendsParameters.size() != 0) {
       user.setMaleFriends(friendsParameters.get(1));
       user.setFemaleFriends(friendsParameters.get(2));
     }
 
-    ArrayList<Integer> followers = getFollowers(id);
+    List<Integer> followers = getFollowers(id);
     if (followers.size() != 0) {
       user.setFollowers(followers.get(0));
       user.setMaleFollowers(followers.get(1));
       user.setFemaleFollowers(followers.get(2));
     }
 
-    ArrayList<Integer> subscriptions = getSubscriptions(id);
+    List<Integer> subscriptions = getSubscriptions(id);
     if (subscriptions.size() != 0) {
       user.setGroupSubscriptions(subscriptions.get(0));
       user.setSubscriptions(subscriptions.get(1));
@@ -257,7 +258,7 @@ public class VkImpl implements SocialNetworkApi {
    * @param id number of user
    * @return ArrayList<Integer> list of friends id's
    */
-  public ArrayList<Integer> getFriendList(int id) {
+  public List<Integer> getFriendList(int id) {
 
     String method = "friends.get";
     String parametr1 = "user_id=" + id;
@@ -274,7 +275,7 @@ public class VkImpl implements SocialNetworkApi {
       e.printStackTrace();
     }
     JSONArray jarr = (JSONArray) jsonObject.get("response");
-    ArrayList<Integer> list = new ArrayList<Integer>();
+    List<Integer> list = new ArrayList<Integer>();
     try {
       for (Object o : jarr) {
         list.add((int) (long) o);
@@ -293,9 +294,9 @@ public class VkImpl implements SocialNetworkApi {
    * @return ArrayList<Integer> result ( result[0] - number of friends,
    *         result[1] - male friends, result[2] - female friends
    */
-  public ArrayList<Integer> getFriendParameters(int id){
+  public List<Integer> getFriendParameters(int id){
 
-    ArrayList<Integer> result = new ArrayList<Integer>();
+    List<Integer> result = new ArrayList<Integer>();
     String method = "friends.get";
     String parametr1 = "user_id=" + id;
     String parametr2 = "fields=sex";
@@ -455,12 +456,12 @@ public class VkImpl implements SocialNetworkApi {
 
   /**
    * Method get subscriptions of user by id
-   * @return ArrayList<Integer> result ( result[0] = number of grups,
+   * @return List<Integer> result ( result[0] = number of grups,
    *         result[1] = number of users are subscribed, result[2] = number of
    *         male, result[3] = number of female
    */
-  public ArrayList<Integer> getSubscriptions(int id) {
-    ArrayList<Integer> result = new ArrayList<Integer>();
+  public List<Integer> getSubscriptions(int id) {
+    List<Integer> result = new ArrayList<Integer>();
     if (id == 0) {
       return result;
     }
@@ -522,8 +523,8 @@ public class VkImpl implements SocialNetworkApi {
    * @throws ParseException
    * @throws IOException
    */
-  public ArrayList<Integer> getFollowers(int id) {
-    ArrayList<Integer> result = new ArrayList<Integer>();
+  public List<Integer> getFollowers(int id) {
+    List<Integer> result = new ArrayList<Integer>();
     if (id == 0) {
       return result;
     }

@@ -14,6 +14,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+   <!-- <distributionManagement>
+        <repository>
+            <id>drive</id>
+            <url>https://www.dropbox.com/sh/zmgc2b3x1ms98kr/AAAbDNYv8acNVYVyL8cgAKZxa?dl=0</url>
+        </repository>
+    </distributionManagement>-->
+
     <build>
         <plugins>
             <plugin>

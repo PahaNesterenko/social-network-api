@@ -258,7 +258,7 @@ public class User {
     return friendList;
   }
 
-  public void setFriendList(ArrayList<Integer> friendList) {
+  public void setFriendList(List<Integer> friendList) {
     this.friendList = friendList;
   }
 
