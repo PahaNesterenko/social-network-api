@@ -21,8 +21,9 @@ public class CustomJsonDateDeserializer extends JsonDeserializer<Date>
     try {
       return format.parse(date);
     } catch (ParseException e) {
-      throw new RuntimeException(e);
+      System.out.println("Bad date " + date);
     }
+    return null;
 
   }
 

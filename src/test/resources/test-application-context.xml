@@ -31,6 +31,8 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.social_network_api.domain.User</value>
+                <value>org.social_network_api.domain.Country</value>
+                <value>org.social_network_api.domain.City</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -42,5 +44,8 @@
     </bean>
 
     <bean id="userDao" class="org.social_network_api.dao.UserDaoImpl"/>
+    <bean id="cityDao" class="org.social_network_api.dao.CityDao"/>
+    <bean id="countryDao" class="org.social_network_api.dao.CountryDao"/>
+
 
 </beans>

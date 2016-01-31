@@ -2,6 +2,7 @@ package org.social_network_api.dao;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.social_network_api.domain.City;
 import org.social_network_api.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ public class UserDaoImpl implements UserDao {
   @Override
   @Transactional
   public void createUser(User user) {
-    sessionFactory.getCurrentSession().persist(user);
+    sessionFactory.getCurrentSession().saveOrUpdate(user);
   }
 
   @Override

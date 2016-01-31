@@ -14,7 +14,7 @@
     <context:component-scan base-package="org.social_network_api"/>
     <tx:annotation-driven/>
 
-    <!--<bean id="transactionManager"
+    <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager"
           name="txManager">
         <property name="sessionFactory" ref="sessionFactory" />
@@ -32,6 +32,8 @@
         <property name="annotatedClasses">
             <list>
                 <value>org.social_network_api.domain.User</value>
+                <value>org.social_network_api.domain.City</value>
+                <value>org.social_network_api.domain.Country</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -40,6 +42,6 @@
                 hibernate.show_sql=true
             </value>
         </property>
-    </bean>-->
+    </bean>
 
 </beans>

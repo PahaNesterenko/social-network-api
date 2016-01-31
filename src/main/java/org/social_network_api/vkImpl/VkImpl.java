@@ -4,10 +4,11 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.social_network_api.domain.Group;
-import org.social_network_api.domain.User;
-import org.social_network_api.domain.Users;
+import org.social_network_api.dao.CityDao;
+import org.social_network_api.dao.CountryDao;
+import org.social_network_api.domain.*;
 import org.social_network_api.interfaces.SocialNetworkApi;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -17,7 +18,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -34,28 +34,13 @@ import static org.social_network_api.Constants.*;
 @Component
 public class VkImpl implements SocialNetworkApi {
 
+  @Autowired
+  private CityDao cityDao;
+
+  @Autowired
+  private CountryDao countryDao;
+
   private static Logger log = Logger.getLogger(VkImpl.class.getName());
-  public static HashMap<Long, String> cities = new HashMap<Long, String>();
-  public static HashMap<Long, String> countries = new HashMap<Long, String>();
-
-
-  /**
-   * Method return random user of Vk who meet some requirements( should not be deactivated, name should not be
-   * "DELETED", user should set its city and should have some friends)
-   * @return proper user User
-  g	 */
-	/*public User getRandUser() throws IOException, ParseException {
-
-		Random rand = new Random();
-		User user;
-		do {
-			user = getUser(rand.nextInt(150000000));
-		} while (user.isDeactivated() || user.getName().equals("DELETED") || user.getCity().equals("n/d")
-				|| user.getFriendList().size() == 0);// get user with at least
-														// minimum info
-		return user;
-	}*/
-
 
   /**
    * Method returns User who is linked with id number in VK. Method send HTTP get request and get JSON
@@ -67,14 +52,11 @@ public class VkImpl implements SocialNetworkApi {
     urlBuilder.queryParam(USER_IDS, id);
     urlBuilder.queryParam(FIELDS_PARAMETER_KEY, FIELDS_PARAMETER_VALUE);
 
-    String url = urlBuilder.build().toUriString();
-
-    System.out.println(url);
-
-    Users users = new RestTemplate().getForObject( url, Users.class);
+    Users users = new RestTemplate().getForObject( urlBuilder.build().toUriString(), Users.class);
     System.out.println(users.getUsers()[0]);
-
     User user = users.getUsers()[0];
+
+    prepareUser(user);
 
     List<Integer> friendList = getFriendList(id);
     user.setFriendList(friendList);
@@ -102,39 +84,27 @@ public class VkImpl implements SocialNetworkApi {
     }
 
     return user;
+  }
 
-    /*
+  private void prepareUser(User user) {
 
-
-
-    Object city = jsonObject.get("city");
-    if (city instanceof String) {
-      user.setCity((String) city);
-    } else {
-      user.setCity(getCitiesById((Long) city).replace("'", " "));
+    if(user.getCityId() != null && !user.getCityId().equals(0L) ) {
+      City city = cityDao.getById(user.getCityId());
+      if (city == null) {
+        city = getCityById(user.getCityId());
+        cityDao.createCity(city);
+      }
+      user.setCity(city);
     }
 
-    Object country = jsonObject.get("country");
-    if (country instanceof String) {
-      user.setCountry((String) country);
-    } else {
-      user.setCountry(getCountriesById((Long) country).replace("'", " "));
+    if(user.getCountryId() != null && !user.getCountryId().equals(0L)) {
+      Country country = countryDao.getById(user.getCountryId());
+      if (country == null) {
+        country = getCountryById(user.getCountryId());
+        countryDao.createCountry(country);
+      }
+      user.setCountry(country);
     }
-
-    Object homeTown = jsonObject.get("home_town");
-    if (homeTown instanceof String) {
-      user.setHomeTown((String) homeTown);
-    } else {
-      user.setHomeTown(getCitiesById((Long) homeTown).replace("'", " "));
-    }
-
-
-
-
-   */
-
-
-
   }
 
   /**
@@ -197,14 +167,14 @@ public class VkImpl implements SocialNetworkApi {
     if (city instanceof String) {
       group.setCity((String) city);
     } else {
-      group.setCity(getCitiesById((Long) city).replace("'", " "));
+      group.setCity(getCityById((Long) city).getName().replace("'", " "));
     }
 
     Object country = jsonObject.get("country");
     if (country instanceof String) {
       group.setCountry((String) country);
     } else {
-      group.setCountry(getCountriesById((Long) country).replace("'", " "));
+      group.setCountry(getCountryById((Long) country).getName().replace("'", " "));
     }
 
     String wikiPage = (String) jsonObject.get("wiki_page");
@@ -296,7 +266,7 @@ public class VkImpl implements SocialNetworkApi {
    */
   public List<Integer> getFriendParameters(int id){
 
-    List<Integer> result = new ArrayList<Integer>();
+    List<Integer> result = new ArrayList<>();
     String method = "friends.get";
     String parametr1 = "user_id=" + id;
     String parametr2 = "fields=sex";
@@ -312,146 +282,47 @@ public class VkImpl implements SocialNetworkApi {
       e.printStackTrace();
     }
     JSONArray jarr = (JSONArray) jsonObject.get("response");
-    if (jarr.size() == 0) {
-      return result;
-    }
+    if (jarr != null && jarr.size() != 0) {
 
-    int userNum = 0;
-    int males = 0;
-    int females = 0;
-    int sex;
+      int userNum = 0;
+      int males = 0;
+      int females = 0;
+      int sex;
 
-    for (Object obj : jarr) {
-      JSONObject jobj = (JSONObject) obj;
-      userNum++;
-      sex = (int) (long) jobj.get("sex");
-      if (sex == 1) {
-        females++;
-      } else if (sex == 2) {
-        males++;
-      }
-    }
-    result.add(userNum);
-    result.add(males);
-    result.add(females);
-    return result;
-  }
-
-  /**
-   * Method remove smiles from string, used to clean status string from 'smiles'.
-   * @return Cleaned string
-   */
-  private String removeSmiles(String s) {
-    char[] init = s.toCharArray();
-    String rez = "";
-    for (int i = 0; i < init.length; ++i) {
-      if (i < init.length - 1) {
-        if ((init[i] == (char) 92) && (init[i + 1] == 'x')) {
-          i += 3;
-          continue;
+      for (Object obj : jarr) {
+        JSONObject jobj = (JSONObject) obj;
+        userNum++;
+        sex = (int) (long) jobj.get("sex");
+        if (sex == 1) {
+          females++;
+        } else if (sex == 2) {
+          males++;
         }
       }
-      if (init[i] == (char) 39) {
-        continue;
-      }
-      rez += init[i];
+      result.add(userNum);
+      result.add(males);
+      result.add(females);
+      return result;
+    }else{
+      return result;
+
     }
-    return rez;
   }
 
-  /**
-   * Method remove non alphabetic characters from string, but leave the space symbol, used for clean city and
-   * country strings
-   * @return Cleaned string
-   */
-  private String removeNonAlphaChars(String s) {
-    char[] init = s.toCharArray();
-    String rez = "";
-    for (int i = 0; i < init.length; ++i) {
-      if (!Character.isAlphabetic(init[i]) && init[i] != ' ') {
-        continue;
-      }
-      rez += init[i];
-    }
-    return rez;
+  private City getCityById(Long id) {
+    UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(VK_HOST + CITY_GET_METHOD);
+    urlBuilder.queryParam(CITY_IDS, id);
+    Cities cities = new RestTemplate().getForObject(urlBuilder.build().toUriString(), Cities.class);
+
+    return cities.getCities().length == 0? null : cities.getCities()[0];
   }
 
-  /**
-   * This method returns the city that linked with city number. Method
-   * send get request to vk method and get the String with country name.
-   * Method check the internal Map container has this number, if not get country through
-   * http request and add country to internal container.
-   * @param id
-   * @return city or n/d if number linked with nothing
-   */
-  private String getCitiesById(Long id) {
+  private Country getCountryById(Long id) {
+    UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(VK_HOST + COUNTRY_GET_METHOD);
+    urlBuilder.queryParam(COUNTRY_IDS, id);
+    Countries countries = new RestTemplate().getForObject(urlBuilder.build().toUriString(), Countries.class);
 
-    if (id == null || id == 0) {
-      return "n/d";
-    }
-
-    if (cities.containsKey(id)) {
-      return cities.get(id);
-    }
-
-    String method = "database.getCitiesById";
-    String parametr1 = "city_ids=" + id;
-
-    InputStreamReader in = request(method, parametr1);
-    JSONParser jsonParser = new JSONParser();
-    JSONObject jsonObject = null;
-    try {
-      jsonObject = (JSONObject) jsonParser.parse(in);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    JSONArray jarr = (JSONArray) jsonObject.get("response");
-    if (jarr.size() == 0) {
-      return "n/d";
-    }
-    jsonObject = (JSONObject) jarr.get(0);
-    String city = (String) jsonObject.get("name");
-    cities.put(id, city);
-    return city;
-  }
-
-  /**
-   * This method returns the country that linked with country number. Method
-   * send get request to vk method and get the String with country name.
-   * Method check the internal Map contains number, if not get country through
-   * http request and add country to internal container.
-   * @param id number of country
-   * @return city or n/d if number link to nothing
-   */
-  private String getCountriesById(Long id) {
-
-    if (id == null || id == 0) {
-      return "n/d";
-    }
-    if (countries.containsKey(id)) {
-      return countries.get(id);
-    }
-
-    String method = "database.getCountriesById";
-    String parametr1 = "country_ids=" + id;
-
-    InputStreamReader in = request(method, parametr1);
-    JSONParser jsonParser = new JSONParser();
-    JSONObject jsonObject = null;
-    try {
-      jsonObject = (JSONObject) jsonParser.parse(in);
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ParseException e) {
-      e.printStackTrace();
-    }
-    JSONArray jarr = (JSONArray) jsonObject.get("response");
-    jsonObject = (JSONObject) jarr.get(0);
-    String country = (String) jsonObject.get("name");
-    countries.put(id, country);
-    return country;
+    return countries.getCountries().length == 0? null : countries.getCountries()[0];
   }
 
   /**

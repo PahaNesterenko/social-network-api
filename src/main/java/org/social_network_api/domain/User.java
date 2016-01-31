@@ -2,15 +2,17 @@ package org.social_network_api.domain;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.social_network_api.process.VkImplUtils;
 import org.social_network_api.utils.CustomJsonDateDeserializer;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Class container for User of VK social web. Contains basic info about user
@@ -42,7 +44,7 @@ public class User {
   private boolean verified;
 
   @JsonProperty("sex")
-  @Column(name = "SEX_ID")
+  @Column(name = "SEX")
   private Sex sex;
 
   @JsonProperty("bdate")
@@ -51,18 +53,28 @@ public class User {
   private Date bdate;
 
   @JsonProperty("city")
-  @Column(name = "CITY")
-  private int city;
+  @Transient
+  private Long cityId;
+
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name="CITY")
+  @JsonIgnore
+  private City city;
 
   @JsonProperty("country")
-  @Column(name = "COUNTRY")
-  private int country;
+  @Transient
+  private Long countryId;
+
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "COUNTRY")
+  @JsonIgnore
+  private Country country;
 
   @JsonProperty("home_town")
   @Column(name = "HOME_TOWN")
   private String homeTown;
 
-  @JsonProperty("photo_max")
+  @JsonProperty("photo_max_orig")
   @Column(name = "PHOTO_ADDRESS")
   private String photoAddress;
 
@@ -79,7 +91,7 @@ public class User {
   private int followersCount;
 
   @JsonProperty("relation")
-  @Column(name = "RELATION_ID")
+  @Column(name = "RELATION")
   private Relation relation;
 
   @Column(name = "FRIENDS_NUM")
@@ -88,10 +100,10 @@ public class User {
   @Transient
   private List<Integer> friendList;
 
-  @Column(name = "MALE_FRIENDST")
+  @Column(name = "MALE_FRIENDS")
   private int maleFriends;
 
-  @Column(name = "FEMALE_FRIENDST")
+  @Column(name = "FEMALE_FRIENDS")
   private int femaleFriends;
 
   @Column(name = "FOLLOWERS")
@@ -123,6 +135,11 @@ public class User {
             + "friends - " + friendsNum + ", male/female - " + maleFriends + "/" + femaleFriends + "\n"
             + "followers - " + followers + ", male/female - " + maleFollowers + "/" + femaleFollowers + "\n"
             + "subscriptions - " + subscriptions + ", male/female - " + maleSubscriptions + "/" + femaleSubscriptions;
+  }
+
+  public Boolean isValidUser()
+  {
+    return isNotBlank(name) && isNotBlank(lastName) && isBlank(deactivated) && VkImplUtils.userHasPhoto(this);
   }
 
 
@@ -182,19 +199,19 @@ public class User {
     this.bdate = bdate;
   }
 
-  public int getCity() {
+  public City getCity() {
     return city;
   }
 
-  public void setCity(int city) {
+  public void setCity(City city) {
     this.city = city;
   }
 
-  public int getCountry() {
+  public Country getCountry() {
     return country;
   }
 
-  public void setCountry(int country) {
+  public void setCountry(Country country) {
     this.country = country;
   }
 
@@ -332,5 +349,21 @@ public class User {
 
   public void setFemaleSubscriptions(int femaleSubscriptions) {
     this.femaleSubscriptions = femaleSubscriptions;
+  }
+
+  public Long getCityId() {
+    return cityId;
+  }
+
+  public void setCityId(Long cityId) {
+    this.cityId = cityId;
+  }
+
+  public Long getCountryId() {
+    return countryId;
+  }
+
+  public void setCountryId(Long countryId) {
+    this.countryId = countryId;
   }
 }
