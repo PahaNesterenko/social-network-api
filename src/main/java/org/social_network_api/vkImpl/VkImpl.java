@@ -47,7 +47,7 @@ public class VkImpl implements SocialNetworkApi {
    * script with user information then parse it and fill instance of User
    * @return Filled User instance
    */
-  public User getUser(int id) {
+  public User getUser(Long id) {
     UriComponentsBuilder urlBuilder = UriComponentsBuilder.fromHttpUrl(VK_HOST + USER_GET_METHOD);
     urlBuilder.queryParam(USER_IDS, id);
     urlBuilder.queryParam(FIELDS_PARAMETER_KEY, FIELDS_PARAMETER_VALUE);
@@ -117,7 +117,7 @@ public class VkImpl implements SocialNetworkApi {
     Random rand = new Random();
     Group group;
     do {
-      group = getGroup(rand.nextInt(15000000));
+      group = getGroup((long) rand.nextInt(15000000));
     } while (group.getName().equals("") || group.getMembersCount() < 500);
     return group;
   }
@@ -126,7 +126,7 @@ public class VkImpl implements SocialNetworkApi {
    * Method fill information about group to Group instance
    * @returnFilled Group instance
    */
-  public Group getGroup(int gid) {
+  public Group getGroup(Long gid) {
     Group group = new Group();
     String method = "groups.getById";
     String parametr1 = "group_id=" + gid;
@@ -228,7 +228,7 @@ public class VkImpl implements SocialNetworkApi {
    * @param id number of user
    * @return ArrayList<Integer> list of friends id's
    */
-  public List<Integer> getFriendList(int id) {
+  public List<Integer> getFriendList(Long id) {
 
     String method = "friends.get";
     String parametr1 = "user_id=" + id;
@@ -245,10 +245,10 @@ public class VkImpl implements SocialNetworkApi {
       e.printStackTrace();
     }
     JSONArray jarr = (JSONArray) jsonObject.get("response");
-    List<Integer> list = new ArrayList<Integer>();
+    List<Integer> list = new ArrayList<>();
     try {
       for (Object o : jarr) {
-        list.add((int) (long) o);
+        list.add( (int) (long) o);
       }
     } catch (NullPointerException e) {
       log.log(Level.INFO, "NPE!!!!");
@@ -264,7 +264,7 @@ public class VkImpl implements SocialNetworkApi {
    * @return ArrayList<Integer> result ( result[0] - number of friends,
    *         result[1] - male friends, result[2] - female friends
    */
-  public List<Integer> getFriendParameters(int id){
+  public List<Integer> getFriendParameters(Long id){
 
     List<Integer> result = new ArrayList<>();
     String method = "friends.get";
@@ -284,9 +284,9 @@ public class VkImpl implements SocialNetworkApi {
     JSONArray jarr = (JSONArray) jsonObject.get("response");
     if (jarr != null && jarr.size() != 0) {
 
-      int userNum = 0;
-      int males = 0;
-      int females = 0;
+      Integer userNum = 0;
+      Integer males = 0;
+      Integer females = 0;
       int sex;
 
       for (Object obj : jarr) {
@@ -331,8 +331,8 @@ public class VkImpl implements SocialNetworkApi {
    *         result[1] = number of users are subscribed, result[2] = number of
    *         male, result[3] = number of female
    */
-  public List<Integer> getSubscriptions(int id) {
-    List<Integer> result = new ArrayList<Integer>();
+  public List<Integer> getSubscriptions(Long id) {
+    List<Integer> result = new ArrayList<>();
     if (id == 0) {
       return result;
     }
@@ -357,10 +357,10 @@ public class VkImpl implements SocialNetworkApi {
       return result;
     }
 
-    int groupNum = 0;
-    int userNum = 0;
-    int males = 0;
-    int females = 0;
+    Integer groupNum = 0;
+    Integer userNum = 0;
+    Integer males = 0;
+    Integer females = 0;
     String type;
     int sex;
 
@@ -394,8 +394,8 @@ public class VkImpl implements SocialNetworkApi {
    * @throws ParseException
    * @throws IOException
    */
-  public List<Integer> getFollowers(int id) {
-    List<Integer> result = new ArrayList<Integer>();
+  public List<Integer> getFollowers(Long id) {
+    List<Integer> result = new ArrayList<>();
     if (id == 0) {
       return result;
     }
@@ -421,9 +421,9 @@ public class VkImpl implements SocialNetworkApi {
       return result;
     }
 
-    int userNum = 0;
-    int males = 0;
-    int females = 0;
+    Integer userNum = 0;
+    Integer males = 0;
+    Integer females = 0;
     int sex;
 
     for (Object obj : jarr) {

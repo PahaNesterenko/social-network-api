@@ -20,7 +20,7 @@ public class VkImplTest {
   @Test
   public void testDurov() {
 
-    User user = vkImpl.getUser(1);
+    User user = vkImpl.getUser(1L);
 
     assertEquals(user.getName(), "Павел");
     assertEquals(user.getLastName(), "Дуров");

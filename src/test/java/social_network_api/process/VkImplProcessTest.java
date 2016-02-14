@@ -31,6 +31,7 @@ public class VkImplProcessTest {
         assertNotNull(user.getLastName());
     }
 
+
     @Ignore
     @Test
     public void fetchUsersTest()

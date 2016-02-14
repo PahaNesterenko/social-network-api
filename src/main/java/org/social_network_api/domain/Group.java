@@ -6,7 +6,7 @@ package org.social_network_api.domain;
  */
 public class Group {
 	
-	private int gid;
+	private Long gid;
 	private String name;
 	private String screenName;
 	private boolean isClosed;
@@ -33,10 +33,10 @@ public class Group {
 	public void setPhotoAddress(String photoAddress) {
 		this.photoAddress = photoAddress;
 	}
-	public int getGid() {
+	public Long getGid() {
 		return gid;
 	}
-	public void setGid(int gid) {
+	public void setGid(Long gid) {
 		this.gid = gid;
 	}
 	public String getName() {

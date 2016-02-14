@@ -19,10 +19,10 @@ public class VkImplProcess {
 
   public User getRandomUser() {
     Random randomGenerator = new Random();
-    Integer randomInt;
+    Long randomInt;
     User user;
     do {
-      randomInt = randomGenerator.nextInt(vkMaxUserId);
+      randomInt = (long) randomGenerator.nextInt(vkMaxUserId);
       user = vkImpl.getUser(randomInt);
     } while (!user.isValidUser());
     System.out.println(user);
