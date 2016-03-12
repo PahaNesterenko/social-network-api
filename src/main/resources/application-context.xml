@@ -34,6 +34,7 @@
                 <value>org.social_network_api.domain.User</value>
                 <value>org.social_network_api.domain.Country</value>
                 <value>org.social_network_api.domain.City</value>
+                <value>org.social_network_api.domain.UserPhoto</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -47,6 +48,7 @@
     <bean id="userDao" class="org.social_network_api.dao.UserDaoImpl"/>
     <bean id="cityDao" class="org.social_network_api.dao.CityDao"/>
     <bean id="countryDao" class="org.social_network_api.dao.CountryDao"/>
+    <bean id="userPhotoDao" class="org.social_network_api.dao.UserPhotoDao"/>
 
     <!--hibernate.current_session_context_class=org.hibernate.context.internal.ThreadLocalSessionContext-->
 

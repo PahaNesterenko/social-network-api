@@ -78,6 +78,10 @@ public class User {
   @Column(name = "PHOTO_ADDRESS")
   private String photoAddress;
 
+  @JsonProperty("hidden")
+  @Transient
+  private String hidden;
+
   @JsonProperty("online")
   @Transient
   private boolean online;
@@ -93,6 +97,11 @@ public class User {
   @JsonProperty("relation")
   @Column(name = "RELATION")
   private Relation relation;
+
+  @JsonProperty("relation_partner")
+  @Transient
+  private User relation_partner;
+
 
   @Column(name = "FRIENDS_NUM")
   private int friendsNum;

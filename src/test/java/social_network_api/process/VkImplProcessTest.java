@@ -5,7 +5,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.social_network_api.dao.UserDao;
+import org.social_network_api.dao.UserPhotoDao;
 import org.social_network_api.domain.User;
+import org.social_network_api.process.ImageProcess;
 import org.social_network_api.process.VkImplProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,6 +25,12 @@ public class VkImplProcessTest {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private UserPhotoDao userPhotoDao;
+
+    @Autowired
+    private ImageProcess imageProcess;
+
     @Test
     public void test()
     {
@@ -37,10 +45,15 @@ public class VkImplProcessTest {
     public void fetchUsersTest()
     {
         User user;
-        for(int i = 0; i < 10 ; ++i)
+        for(int i = 0; i < 1000 ; ++i)
         {
-            user = vkImplProcess.getRandomUser();
-            userDao.createUser(user);
+            try {
+                user = vkImplProcess.getRandomUser();
+                userDao.createUser(user);
+                userPhotoDao.createUserPhoto(imageProcess.getUserPhoto(user));
+            }catch(Exception e){
+
+            }
         }
     }
 

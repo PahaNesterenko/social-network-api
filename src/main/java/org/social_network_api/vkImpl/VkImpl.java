@@ -6,8 +6,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.social_network_api.dao.CityDao;
 import org.social_network_api.dao.CountryDao;
+import org.social_network_api.dao.UserPhotoDao;
 import org.social_network_api.domain.*;
 import org.social_network_api.interfaces.SocialNetworkApi;
+import org.social_network_api.process.ImageProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -40,6 +42,12 @@ public class VkImpl implements SocialNetworkApi {
   @Autowired
   private CountryDao countryDao;
 
+  @Autowired
+  private UserPhotoDao userPhotoDao;
+
+  @Autowired
+  private ImageProcess imageProcess;
+
   private static Logger log = Logger.getLogger(VkImpl.class.getName());
 
   /**
@@ -56,7 +64,8 @@ public class VkImpl implements SocialNetworkApi {
     System.out.println(users.getUsers()[0]);
     User user = users.getUsers()[0];
 
-    prepareUser(user);
+    prepareUserLocation(user);
+
 
     List<Integer> friendList = getFriendList(id);
     user.setFriendList(friendList);
@@ -86,7 +95,7 @@ public class VkImpl implements SocialNetworkApi {
     return user;
   }
 
-  private void prepareUser(User user) {
+  private void prepareUserLocation(User user) {
 
     if(user.getCityId() != null && !user.getCityId().equals(0L) ) {
       City city = cityDao.getById(user.getCityId());
